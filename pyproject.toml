@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quara-releaser"
+dynamic = ["version"]
+authors = [
+    { name = "Guillaume Charbonnier", email = "guillaume.charbonnier@araymond.com" },
+]
+description = "Command line to ease the release of Quara applications"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "black",
+    "isort",
+    "invoke",
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "wheel",
+    "fastapi",
+    "uvicorn",
+    "toml",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "releaser.__about__.__version__" }
+
+[tool.quara.releaser]
+on_commit_msg = [
+    { match = "*", tags = [
+        { value = "latest" },
+        { type = "version" },
+        { type = "git_commit_sha", size = 7 },
+    ] },
+]
+
+[tool.quara.releaser.applications.releaser]
+images = [
+    { repository = "quara.azurecr.io/releaser", platforms = [
+        "linux/amd64",
+        "linux/arm64",
+    ] },
+]
+
+[tool.quara.releaser.applications.releaser-docs]
+images = ["quara.azurecr.io/releaser-docs"]
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["tests", "src"]
+strict = ["src"]
+exclude = [
+    "**/.devbox",
+    "**/.vscode",
+    "**/.venv",
+    "**/node_modules",
+    "**/__pycache__",
+    ".git",
+    "**/build",
+]
+typeCheckingMode = "basic"
+reportUnnecessaryTypeIgnoreComment = "warning"

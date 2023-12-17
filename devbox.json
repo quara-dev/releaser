@@ -1,0 +1,30 @@
+{
+  "packages": ["python@3.10"],
+  "shell": {
+    "init_hook": ["source $VENV_DIR/bin/activate"],
+    "scripts": {
+      "install": [
+        "bash .scripts/00-update-pip.sh",
+        "bash .scripts/10-install-pyright.sh",
+        "bash .scripts/20-install-pip-tools.sh",
+        "bash .scripts/30-install-requirements.sh",
+        "bash .scripts/99-install-project.sh"
+      ],
+      "test": ["pytest tests/"],
+      "test:unit": ["pytest tests/test_hexagon"],
+      "test:adapters": ["pytest tests/test_adapters"],
+      "test:cli": ["pytest tests/test_cli"],
+      "build": [
+        "python -m build .",
+        "python -m zipapp -p '/usr/bin/env python' ./src/releaser -o dist/releaser.pyz"
+      ],
+      "clean": ["rm -rf dist/ build/"],
+      "reinstall": ["rm -rf *.egg-info/", "devbox run install"],
+      "lint": ["flake8 src tests"],
+      "format": ["black src tests", "isort src tests"],
+      "format:check": ["black --check src tests", "isort --check src tests"],
+      "typecheck": ["pyright src tests"],
+      "lock": ["pip-compile pyproject.toml --extra=dev -o requirements.txt"]
+    }
+  }
+}
