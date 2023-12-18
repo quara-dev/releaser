@@ -52,7 +52,7 @@ class UploadManifestCommand:
             help="Input file where release manifest will be read.",
         )
         self._parser.add_argument(  # type: ignore[reportUnknownMemberType]
-            "--webook-url",
+            "--webhook-url",
             "-w",
             metavar="URL",
             help="Webhook URL to notify.",
