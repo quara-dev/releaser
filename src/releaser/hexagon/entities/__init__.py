@@ -1,5 +1,5 @@
 from __future__ import annotations
 
-from . import artefact, strategy
+from . import artefact, bakery, strategy
 
-__all__ = ["artefact", "strategy"]
+__all__ = ["artefact", "bakery", "strategy"]

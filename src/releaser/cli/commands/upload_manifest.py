@@ -6,17 +6,15 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from releaser.adapters import (
-    GitSubprocessReader,
-    HttpsWebhookClient,
-    InMemoryJsonWriter,
-    JsonFileWriter,
-    MagicStrategyReader,
-    MagicVersionReader,
-)
 from releaser.hexagon.entities import artefact
 from releaser.hexagon.services.manifest_generator import ManifestGenerator
 from releaser.hexagon.services.manifest_notifier import ManifestNotifier
+from releaser.infra.git_reader.subprocess import GitSubprocessReader
+from releaser.infra.json_writer.json_file import JsonFileWriter
+from releaser.infra.json_writer.memory import InMemoryJsonWriter
+from releaser.infra.strategy_reader.auto import AutoStrategyReader
+from releaser.infra.version_reader.auto import AutoVersionReader
+from releaser.infra.webhook_client.standard_http import HttpWebhookClient
 
 from ..context import GlobalOpts
 
@@ -79,7 +77,7 @@ class UploadManifestCommand:
         service = ManifestNotifier(
             manifest=manifest,
             webhook_url=options.webhook_url,
-            webhook_client=options.global_opts.get_webhook_client(HttpsWebhookClient()),
+            webhook_client=options.global_opts.get_webhook_client(HttpWebhookClient()),
         )
         return service
 
@@ -98,10 +96,10 @@ class UploadManifestCommand:
                 GitSubprocessReader(),
             )
             strategy_reader = global_opts.get_strategy_reader(
-                MagicStrategyReader(Path.cwd()),
+                AutoStrategyReader(Path.cwd()),
             )
             version_reader = global_opts.get_version_reader(
-                MagicVersionReader(Path.cwd()),
+                AutoVersionReader(Path.cwd()),
             )
             internal_service = ManifestGenerator(
                 git_reader=git_reader,

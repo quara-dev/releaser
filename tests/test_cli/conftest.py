@@ -2,9 +2,13 @@ from __future__ import annotations
 
 import pytest
 
-from tests.stubs.stubs import WebhookClientStub
-
-from ..stubs import GitReaderStub, JsonWriterStub, StrategyReaderStub, VersionReaderStub
+from ..stubs import (
+    GitReaderStub,
+    JsonWriterStub,
+    StrategyReaderStub,
+    VersionReaderStub,
+    WebhookClientStub,
+)
 
 
 @pytest.fixture

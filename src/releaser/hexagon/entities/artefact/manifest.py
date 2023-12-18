@@ -57,3 +57,9 @@ class Manifest:
             for app in self.get_apps(applications).values()
             for image in app.get_images(repositories, manifest_tags)
         ]
+
+    def get_image(self, app: str, repository: str) -> Image | None:
+        """Get an image."""
+        for image in self.get_images([app], [repository]):
+            return image
+        return None

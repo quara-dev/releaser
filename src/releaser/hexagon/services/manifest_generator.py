@@ -118,9 +118,13 @@ class ManifestGenerator:
             raise ValueError(f"Unknown tag type {tag}")
 
     def _transform_tag_to_platform_tag(self, tag: str, platform: str | None) -> str:
-        """Transform a tag to a platform tag."""
         if not platform:
             return tag
+        suffix = self.get_platform_suffix(platform)
+        return f"{tag}{suffix}"
+
+    @staticmethod
+    def get_platform_suffix(platform: str):
         if platform == "linux/amd64":
             suffix = "amd64"
         elif platform == "linux/arm64":
@@ -131,4 +135,4 @@ class ManifestGenerator:
             suffix = "armv6"
         else:
             raise ValueError(f"Platform not supported: {platform}")
-        return f"{tag}-{suffix}"
+        return "-" + suffix

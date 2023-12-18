@@ -7,13 +7,6 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from releaser.adapters import (
-    GitSubprocessReader,
-    InMemoryJsonWriter,
-    JsonFileWriter,
-    MagicStrategyReader,
-    MagicVersionReader,
-)
 from releaser.hexagon.entities import artefact
 from releaser.hexagon.services.manifest_analyzer import (
     ImageQuery,
@@ -23,6 +16,11 @@ from releaser.hexagon.services.manifest_analyzer import (
     TagQuery,
 )
 from releaser.hexagon.services.manifest_generator import ManifestGenerator
+from releaser.infra.git_reader.subprocess import GitSubprocessReader
+from releaser.infra.json_writer.json_file import JsonFileWriter
+from releaser.infra.json_writer.memory import InMemoryJsonWriter
+from releaser.infra.strategy_reader.auto import AutoStrategyReader
+from releaser.infra.version_reader.auto import AutoVersionReader
 
 from ..context import GlobalOpts
 
@@ -221,10 +219,10 @@ class AnalyzeManifestCommand:
                 GitSubprocessReader(),
             )
             strategy_reader = global_opts.get_strategy_reader(
-                MagicStrategyReader(Path.cwd()),
+                AutoStrategyReader(Path.cwd()),
             )
             version_reader = global_opts.get_version_reader(
-                MagicVersionReader(Path.cwd()),
+                AutoVersionReader(Path.cwd()),
             )
             internal_service = ManifestGenerator(
                 git_reader=git_reader,

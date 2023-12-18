@@ -4,12 +4,13 @@ import argparse
 import sys
 
 from releaser.__about__ import __version__
-from releaser.cli.commands.upload_manifest import UploadManifestCommand
 from releaser.cli.context import GlobalOpts
 
 from . import testing
 from .commands.analyze_manifest import AnalyzeManifestCommand
+from .commands.bake_manifest import BakeManifestCommand
 from .commands.create_manifest import CreateManifestCommand
+from .commands.upload_manifest import UploadManifestCommand
 
 
 def main() -> None:
@@ -57,6 +58,7 @@ class Application:
         self.create_manifest = CreateManifestCommand(subparsers)
         self.analyze_manifest = AnalyzeManifestCommand(subparsers)
         self.upload_manifest = UploadManifestCommand(subparsers)
+        self.bake_manifest = BakeManifestCommand(subparsers)
 
     def execute(self, command_line_args: list[str] | None = None) -> int:
         """Execute the application.
@@ -78,6 +80,9 @@ class Application:
         elif command == "upload-manifest":
             opts = self.upload_manifest.parse_opts(args, global_opts)
             return self.upload_manifest.run(opts)
+        elif command == "bake-manifest":
+            opts = self.bake_manifest.parse_opts(args, global_opts)
+            return self.bake_manifest.run(opts)
         elif command:
             print(f"Unknown command: {args.command}", file=sys.stderr)
             return 1

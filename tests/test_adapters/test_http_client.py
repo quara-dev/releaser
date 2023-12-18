@@ -4,15 +4,10 @@ import asyncio
 
 import pytest
 
-from releaser.adapters import HttpsWebhookClient
 from releaser.hexagon.entities import artefact
+from releaser.infra.webhook_client.standard_http import HttpWebhookClient
 
-from .webhook import (  # noqa: F401
-    EmbeddedTestServer,
-    Spy,
-    test_webhook_server,
-    webhook_spy,
-)
+from .webhook import EmbeddedTestServer, Spy
 
 
 class TestHttpsWebookClient:
@@ -22,7 +17,7 @@ class TestHttpsWebookClient:
     ) -> None:
         self.spy = webhook_spy
         self.server = test_webhook_server
-        self.client = HttpsWebhookClient()
+        self.client = HttpWebhookClient()
 
     @pytest.mark.asyncio
     async def test_http_request_fails(self) -> None:

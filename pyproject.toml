@@ -36,29 +36,26 @@ version = { attr = "releaser.__about__.__version__" }
 on_commit_msg = [
     { match = "*", tags = [
         { value = "latest" },
-        { type = "version" },
         { type = "git_commit_sha", size = 7 },
+    ] },
+    { match = "chore\\(release\\):", tags = [
+        { type = "version" },
+        { type = "version", minor = true },
+        { type = "version", major = true },
     ] },
 ]
 
 [tool.quara.releaser.applications.releaser]
 images = [
-    { repository = "quara.azurecr.io/releaser", platforms = [
+    { repository = "quara.azurecr.io/releaser", dockerfile = "Dockerfile", platforms = [
         "linux/amd64",
         "linux/arm64",
     ] },
 ]
 
 [tool.quara.releaser.applications.releaser-docs]
-images = ["quara.azurecr.io/releaser-docs"]
-on_commit_msg = [
-    { match = "*", tags = [
-        { value = "latest" },
-        { type = "version", file = "doc-version.json" },
-        { type = "version", file = "doc-version.json", minor = true },
-        { type = "version", file = "doc-version.json", major = true },
-        { type = "git_commit_sha", size = 7 },
-    ] },
+images = [
+    { repository = "quara.azurecr.io/releaser-docs", context = "docs", dockerfile = "Dockerfile" },
 ]
 
 [tool.pyright]

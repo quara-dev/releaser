@@ -24,7 +24,14 @@
       "format": ["black src tests", "isort src tests"],
       "format:check": ["black --check src tests", "isort --check src tests"],
       "typecheck": ["pyright src tests"],
-      "lock": ["pip-compile pyproject.toml --extra=dev -o requirements.txt"]
+      "lock": ["pip-compile pyproject.toml --extra=dev -o requirements.txt"],
+      "precommit": [
+        "black src tests",
+        "isort src tests",
+        "flake8 src tests",
+        "pyright src tests",
+        "pytest tests/"
+      ]
     }
   }
 }

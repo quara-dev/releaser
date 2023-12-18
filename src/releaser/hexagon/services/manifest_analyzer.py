@@ -1,5 +1,5 @@
-"""Service used to send a POST request to a webhook URL with a
-manifest as JSON payload."""
+"""Service used to analyze manifest content."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -109,11 +109,11 @@ class ManifestAnalyzer:
     def execute(self, query: Query) -> list[str]:
         """Execute query."""
         if isinstance(query, ApplicationQuery):
-            return self._get_applications(query)
+            return self.get_applications(query)
         if isinstance(query, RepositoryQuery):
-            return self._get_repositories(query)
+            return self.get_repositories(query)
         if isinstance(query, ImageQuery):
-            return self._get_images(query)
+            return self.get_images(query)
         if isinstance(query, TagQuery):
             return self._get_tags(query)
         if isinstance(query, PlatformQuery):
@@ -124,7 +124,7 @@ class ManifestAnalyzer:
         """Get manifest."""
         return self.manifest
 
-    def _get_applications(self, query: ApplicationQuery) -> list[str]:
+    def get_applications(self, query: ApplicationQuery) -> list[str]:
         """Query applications."""
         applications: list[str] = []
         for app_name, app in self.manifest.get_apps(query.application).items():
@@ -143,7 +143,7 @@ class ManifestAnalyzer:
             applications.append(app_name)
         return applications
 
-    def _get_repositories(self, query: RepositoryQuery) -> list[str]:
+    def get_repositories(self, query: RepositoryQuery) -> list[str]:
         """Query image repositories."""
         repositories: list[str] = []
         for image in self.manifest.get_images(
@@ -156,7 +156,7 @@ class ManifestAnalyzer:
             repositories.append(image.repository)
         return list(set(repositories))
 
-    def _get_images(self, query: ImageQuery) -> list[str]:
+    def get_images(self, query: ImageQuery) -> list[str]:
         """Query full image names."""
         images: list[str] = []
         for image in self.manifest.get_images(

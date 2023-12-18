@@ -12,3 +12,5 @@ build/
 *.swp
 *.log
 *.DS_Store
+bake.output.json
+bake.spec.json
