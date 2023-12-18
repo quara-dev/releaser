@@ -12,7 +12,7 @@ class PyprojectLoader:
         """Load a pyproject.toml file as a dictionary."""
 
         try:
-            import toml  # pyright: ignore[reportMissingModuleSource]
+            import toml
         except ImportError:
             # Crash if toml is not installed.
             # FIXME: This should be handled by the CLI
