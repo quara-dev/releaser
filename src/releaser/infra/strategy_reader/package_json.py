@@ -11,7 +11,7 @@ class PackageJsonStrategyReader(StrategyReader):
     def __init__(self, filepath: Path) -> None:
         self.filepath = filepath
 
-    def detect(self) -> strategy.ReleaseStrategy | None:
+    def read(self) -> strategy.ReleaseStrategy | None:
         if not self.filepath.is_file():
             return None
         package = json.loads(self.filepath.read_text())

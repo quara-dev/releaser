@@ -4,13 +4,24 @@ from dataclasses import dataclass
 
 from releaser.hexagon.ports import (
     GitReader,
+    ImageBaker,
     JsonWriter,
     StrategyReader,
     VersionReader,
     WebhookClient,
 )
 
-from . import testing
+
+@dataclass
+class Dependencies:
+    """Dependencies for testing."""
+
+    git_reader: GitReader
+    image_baker: ImageBaker
+    manifest_writer: JsonWriter
+    strategy_reader: StrategyReader
+    version_reader: VersionReader
+    webhook_client: WebhookClient
 
 
 @dataclass
@@ -20,7 +31,7 @@ class GlobalOpts:
     debug: bool
     """Debug mode."""
 
-    _testing_dependencies: testing.Dependencies | None = None
+    _testing_dependencies: Dependencies | None = None
     """Testing dependencies. Only used in tests."""
 
     def get_reader(self, default: GitReader) -> GitReader:
@@ -59,6 +70,14 @@ class GlobalOpts:
         """Get the webhook client."""
         return (
             self._testing_dependencies.webhook_client
+            if self._testing_dependencies
+            else default
+        )
+
+    def get_image_baker(self, default: ImageBaker) -> ImageBaker:
+        """Get the image baker."""
+        return (
+            self._testing_dependencies.image_baker
             if self._testing_dependencies
             else default
         )

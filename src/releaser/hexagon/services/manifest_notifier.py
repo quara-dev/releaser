@@ -24,4 +24,4 @@ class ManifestNotifier:
 
     def execute(self) -> None:
         """Upload the manifest to webhook url."""
-        self.webhook_client.post_json(self.webhook_url, self.manifest)
+        self.webhook_client.post(self.webhook_url, self.manifest)

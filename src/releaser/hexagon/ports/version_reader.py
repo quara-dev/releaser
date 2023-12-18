@@ -14,13 +14,13 @@ class VersionReader(abc.ABC):
     """
 
     @abc.abstractmethod
-    def read_version(self, version_file: str | None) -> str | None:
+    def read(self, version_file: str | None) -> str | None:
         """Read the version of a project."""
         raise NotImplementedError
 
     def read_version_tag(self, tag: strategy.VersionTag) -> str | None:
         """Read the version from a version tag."""
-        version = self.read_version(tag.file)
+        version = self.read(tag.file)
         if not version:
             return None
         if tag.minor:

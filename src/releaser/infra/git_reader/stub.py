@@ -4,6 +4,8 @@ from releaser.hexagon.ports import GitReader
 
 
 class GitReaderStub(GitReader):
+    """A stub git reader that can be used for testing."""
+
     def __init__(self) -> None:
         self._sha: str | None = None
         self._history: list[str] | None = None
@@ -25,10 +27,13 @@ class GitReaderStub(GitReader):
         return list(self._history)
 
     def set_sha(self, sha: str) -> None:
+        """Test helper: Set the sha that will be returned by read_most_recent_commit_sha."""
         self._sha = sha
 
     def set_history(self, history: list[str]) -> None:
+        """Test helper: Set the history that will be returned by read_commit_message_history."""
         self._history = history
 
     def set_is_dirty(self, is_dirty: bool) -> None:
+        """Test helper: Set the value that will be returned by is_dirty."""
         self._is_dirty = is_dirty

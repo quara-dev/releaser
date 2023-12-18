@@ -7,7 +7,7 @@ from releaser.hexagon.ports import VersionReader
 
 
 class JsonFileVersionReader(VersionReader):
-    def read_version(self, version_file: str | None) -> str | None:
+    def read(self, version_file: str | None) -> str | None:
         if not version_file:
             return None
         version_filepath = Path(version_file).expanduser()

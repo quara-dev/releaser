@@ -12,7 +12,7 @@ class PyprojectStrategyReader(StrategyReader, PyprojectLoader):
     def __init__(self, filepath: Path) -> None:
         self.filepath = filepath
 
-    def detect(self) -> strategy.ReleaseStrategy | None:
+    def read(self) -> strategy.ReleaseStrategy | None:
         if not self.filepath.exists():
             return None
         content = self.load_pyproject(self.filepath)

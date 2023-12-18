@@ -12,7 +12,14 @@ from releaser.hexagon.ports import WebhookClient
 
 
 class HttpWebhookClient(WebhookClient):
-    def post_json(self, webhook_url: str, manifest: artefact.Manifest) -> None:
+    """A webhook client that uses HTTP to send webhooks.
+
+    HTTP client is implemented using the standard library.
+    """
+
+    def post(self, webhook_url: str, manifest: artefact.Manifest) -> None:
+        """Send a webhook to the given URL with the given manifest as JSON."""
+
         parsed_url = urlparse(webhook_url)
         host = parsed_url.hostname
         if not host:

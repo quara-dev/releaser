@@ -31,7 +31,7 @@ class ManifestGenerator:
     def execute(self) -> None:
         """Generate the manifest."""
 
-        strategy = self.strategy_reader.detect()
+        strategy = self.strategy_reader.read()
         if not strategy:
             raise ReleaseStrategyNotFoundError()
         manifest = artefact.Manifest(applications={})

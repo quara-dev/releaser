@@ -5,6 +5,12 @@ from releaser.hexagon.ports import JsonWriter
 
 
 class JsonWriterStub(JsonWriter):
+    """A stub JSON writer that can be used for testing.
+
+    A stub cannot be used twice in the same test without calling
+    reset() in between.
+    """
+
     def __init__(self) -> None:
         self.manifest: artefact.Manifest | None = None
 
@@ -15,3 +21,7 @@ class JsonWriterStub(JsonWriter):
 
     def read_manifest(self) -> artefact.Manifest | None:
         return self.manifest
+
+    def reset(self) -> None:
+        """Test helper: reset the stub."""
+        self.manifest = None

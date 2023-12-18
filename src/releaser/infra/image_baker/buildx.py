@@ -9,7 +9,7 @@ from releaser.hexagon.ports import ImageBaker
 
 
 class BuildxImageBaker(ImageBaker):
-    """An image baker that uses buildx."""
+    """An image baker that uses docker buildx bake command."""
 
     def __init__(
         self,
@@ -24,6 +24,7 @@ class BuildxImageBaker(ImageBaker):
         self.application = application
 
     def bake(self, spec: bakery.ImagesSpec) -> None:
+        """Bake images using docker buildx bake."""
         self.write_bake_file(spec)
         dest: list[str] = []
         if self.push:
@@ -43,9 +44,16 @@ class BuildxImageBaker(ImageBaker):
         subprocess.check_call(cmd)
 
     def write_bake_file(self, spec: bakery.ImagesSpec) -> None:
+        """Generate and write a bake file to disk."""
+
         self.bake_file.write_text(self.generate_bake_file(spec))
 
     def generate_bake_file(self, spec: bakery.ImagesSpec) -> str:
+        """Generate a bake file as a JSON string.
+
+        Reference: https://docs.docker.com/build/bake/reference/
+        """
+
         bakefile = {}
         bakefile["target"] = {
             target.name: {

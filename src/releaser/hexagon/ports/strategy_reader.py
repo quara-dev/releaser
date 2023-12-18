@@ -10,6 +10,6 @@ class StrategyReader(abc.ABC):
     """Abstract base class for reading strategy from current project."""
 
     @abc.abstractmethod
-    def detect(self) -> strategy.ReleaseStrategy | None:
+    def read(self) -> strategy.ReleaseStrategy | None:
         """Detect strategy from current project."""
         raise NotImplementedError

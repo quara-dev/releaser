@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import testing
 from .app import Application, main
+from .context import Dependencies, GlobalOpts
 
-__all__ = ["Application", "main", "testing"]
+__all__ = ["Application", "main", "Dependencies", "GlobalOpts"]

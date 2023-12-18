@@ -11,6 +11,8 @@ from releaser.hexagon.ports import StrategyReader
 from releaser.hexagon.services.manifest_analyzer import ManifestAnalyzer
 from releaser.hexagon.services.manifest_baker import ManifestBaker
 from releaser.hexagon.services.manifest_generator import ManifestGenerator
+
+# Adapters
 from releaser.infra.git_reader.subprocess import GitSubprocessReader
 from releaser.infra.image_baker.buildx import BuildxImageBaker
 from releaser.infra.json_writer.json_file import JsonFileWriter
@@ -105,7 +107,7 @@ class BakeManifestCommand:
         strategy_reader = options.global_opts.get_strategy_reader(
             AutoStrategyReader(Path.cwd()),
         )
-        release_strategy = strategy_reader.detect()
+        release_strategy = strategy_reader.read()
         if not release_strategy:
             print("ERROR: No release strategy found.", file=sys.stderr)
             sys.exit(1)

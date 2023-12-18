@@ -6,7 +6,7 @@ import sys
 from releaser.__about__ import __version__
 from releaser.cli.context import GlobalOpts
 
-from . import testing
+from . import context
 from .commands.analyze_manifest import AnalyzeManifestCommand
 from .commands.bake_manifest import BakeManifestCommand
 from .commands.create_manifest import CreateManifestCommand
@@ -27,7 +27,7 @@ class Application:
     """
 
     def __init__(
-        self, testing_dependencies: testing.Dependencies | None = None
+        self, testing_dependencies: context.Dependencies | None = None
     ) -> None:
         """Initialize the application.
 

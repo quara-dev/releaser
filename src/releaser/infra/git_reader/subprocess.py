@@ -8,6 +8,12 @@ from releaser.hexagon.ports import GitReader
 class GitSubprocessReader(GitReader):
     """A git reader that uses subprocesses to read git information."""
 
+    def __init__(self) -> None:
+        # FIXME: Check if git is installed
+        # FIXME: Check if directory is a git repository
+        # Let the CLI handle these errors
+        pass
+
     def is_dirty(self) -> bool:
         process = subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"])
         return process.returncode != 0

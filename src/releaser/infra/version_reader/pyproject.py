@@ -9,7 +9,7 @@ from .._pyproject.loader import PyprojectLoader
 
 
 class PyprojectVersionReader(VersionReader, PyprojectLoader):
-    def read_version(self, version_file: str | None) -> str | None:
+    def read(self, version_file: str | None) -> str | None:
         if not version_file:
             return None
         version_filepath = Path(version_file).expanduser()

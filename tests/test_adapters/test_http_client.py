@@ -22,7 +22,7 @@ class TestHttpsWebookClient:
     @pytest.mark.asyncio
     async def test_http_request_fails(self) -> None:
         def act() -> None:
-            self.client.post_json(
+            self.client.post(
                 "http://localhost:8000/QUARA/_apis/public/distributedtask/webhooks/TestWebhook?api-version=6.0-preview",
                 artefact.Manifest(applications={}),
             )
