@@ -1,5 +1,6 @@
 """Service used to send a POST request to a webhook URL with a
 manifest as JSON payload."""
+from __future__ import annotations
 
 from dataclasses import dataclass
 

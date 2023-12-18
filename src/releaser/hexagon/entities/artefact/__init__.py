@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .application import Application
 from .image import Image, PlatformImage
 from .manifest import Manifest

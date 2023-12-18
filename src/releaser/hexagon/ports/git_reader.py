@@ -1,4 +1,5 @@
 """This module defines the GitReader abstract base class."""
+from __future__ import annotations
 
 import abc
 import re

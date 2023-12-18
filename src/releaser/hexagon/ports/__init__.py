@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .git_reader import GitReader
 from .json_writer import JsonWriter
 from .strategy_reader import StrategyReader

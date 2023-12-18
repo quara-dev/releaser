@@ -1,5 +1,5 @@
 """This module defines the VersionReader abstract base class."""
-
+from __future__ import annotations
 
 import abc
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from releaser.hexagon.entities.artefact import Manifest
 from releaser.hexagon.entities.strategy import ReleaseStrategy
 from releaser.hexagon.ports import (
