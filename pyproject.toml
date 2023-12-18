@@ -22,6 +22,7 @@ dev = [
     "flake8",
     "pytest",
     "pytest-cov",
+    "pytest-asyncio",
     "wheel",
     "fastapi",
     "uvicorn",
