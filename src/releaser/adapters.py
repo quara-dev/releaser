@@ -98,8 +98,8 @@ class HttpsWebhookClient(WebhookClient):
         host = parsed_url.hostname
         if not host:
             raise ValueError(f"Invalid webhook URL: {webhook_url}")
-        if parsed_url.params:
-            path_with_params = f"{parsed_url.path}?{parsed_url.params}"
+        if parsed_url.query:
+            path_with_params = f"{parsed_url.path}?{parsed_url.query}"
         else:
             path_with_params = parsed_url.path
         data = json.dumps(asdict(manifest), separators=(",", ":"))
@@ -118,6 +118,7 @@ class HttpsWebhookClient(WebhookClient):
         )
         response = connection.getresponse()
         if response.status != http.HTTPStatus.OK:
+            print(response.read().decode(), file=sys.stderr)
             raise RuntimeError(
                 f"Failed to send webhook to {webhook_url}: {response.status} {response.reason}"
             )

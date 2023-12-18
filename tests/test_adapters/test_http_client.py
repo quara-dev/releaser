@@ -26,7 +26,8 @@ class TestHttpsWebookClient:
     async def test_http_request_fails(self) -> None:
         def act() -> None:
             self.client.post_json(
-                "http://localhost:8000/webhook", artefact.Manifest(applications={})
+                "http://localhost:8000/QUARA/_apis/public/distributedtask/webhooks/TestWebhook?api-version=6.0-preview",
+                artefact.Manifest(applications={}),
             )
 
         await asyncio.get_event_loop().run_in_executor(None, act)
@@ -34,4 +35,7 @@ class TestHttpsWebookClient:
         request = self.spy.received[0]
         assert request.json == {"applications": {}}
         assert request.method == "POST"
-        assert request.path == "/webhook"
+        assert (
+            request.path == "/QUARA/_apis/public/distributedtask/webhooks/TestWebhook"
+        )
+        assert request.query == "api-version=6.0-preview"

@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 class SpyRequest:
     method: str
     path: str
+    query: str
     json: str
 
 
@@ -18,12 +19,13 @@ class Spy:
 def create_app(spy: Spy):
     app = FastAPI(title="Testing Webhook")
 
-    @app.post("/webhook")
+    @app.post("/QUARA/_apis/public/distributedtask/webhooks/TestWebhook")
     async def webhook(request: Request):
         spy.received.append(
             SpyRequest(
                 method=request.method,
                 path=request.url.path,
+                query=request.url.query,
                 json=await request.json(),
             )
         )
