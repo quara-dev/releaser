@@ -2,6 +2,23 @@
 
 ## Example usage in Azure Devops
 
+- Install `releaser`:
+
+```yaml
+steps:
+  - script: |
+    sudo wget https://github.com/quara-dev/releaser/releases/latest/download/releaser.pyz -O /usr/local/bin/releaser
+    sudo chmod /usr/local/bin/releaser
+```
+
+- Install `releaser` with `toml` optional dependencies to read `pyproject.toml` files:
+
+```yaml
+steps:
+  - script: |
+      pip install git+https://github.com/quara-dev/releaser.git toml
+```
+
 - Create a file named `manifest.json` and publish it as pipeline artefact:
 
 ```yaml
@@ -25,55 +42,6 @@ steps:
 
   - script: echo $MANIFEST
     displayName: Display MANIFEST variable
-```
-
-- Define a comma-separated list variable holding all tags to build:
-
-```yaml
-parameters:
-  - name: application
-    type: string
-
-steps:
-  - script: |
-      tags=$(releaser analyze-manifest --list-tags --app {{ parameters.application }} --no-platform
-      comma_separated_tags=$(echo $tags | jq -r 'join(",")')
-      echo "##vso[task.setvariable variable=TAGS;isoutput=true]$comma_separated_tags"
-    displayName: Create TAGS variable holding comma-separated list of docker image tags to build for app
-
-  - script: echo $TAGS
-    displayName: Display TAGS variable
-```
-
-- Build a multi-platform docker image manifest:
-
-```yaml
-parameters:
-  - name: application
-    type: string
-  - name: platform
-    type: string
-
-steps:
-  - step: |
-      for repository in $(releaser analyze-manifest --list-repositories --app {{ parameters.application }}); do
-        for image in $(releaser analyze-manifest --list-images --repository "$repository" --platform {{ parameters.platform }}); do
-          # Build image for platform
-          docker build -t $image --platform {{ parameters.platform }} --push ...
-        done
-      done
-    displayName: Build docker image for platform {{ parameters.platform }}
-
-  - step: |
-      for repository in $(releaser analyze-manifest --list-repositories --app {{ parameters.application }}); do
-        for tag in $(releaser analyze-manifest --list-tags --repository $repository --no-platform); do
-          json_images=$(releaser analyze-manifest --list-images --repository $repository --manifest-tag "$tag")
-          manifest_image="$repository:$tag"
-          platform_images=$(echo $json_images | jq -r 'join(" ")')
-          docker manifest create $manifest_image $platform_images
-      done
-    done
-
 ```
 
 ## Command Line Reference
@@ -158,10 +126,24 @@ Many options are available to query specific information within the manifest.
 
   > Note: Using `--platform` excludes non-platform tags and returns only plaform tags for any of given platforms only.
 
+## Build and publish artefacts for the manifest
+
+- Build all docker images at once using `bake-manifest` command:
+
+```bash
+releaser bake-manifest
+```
+
+- Optionally, use `--push` command to push image to remote registries:
+
+```bash
+releaser bake-manifest --push
+```
+
 ### Upload the manifest
 
 A command can be used to publish manifest using a POST request:
 
 ```bash
-releaser upload-manifest -i manifest.json --webhook $AZ_DEVOPS_WEBHOOK_URL
+releaser upload-manifest --webhook $AZ_DEVOPS_WEBHOOK_URL
 ```
