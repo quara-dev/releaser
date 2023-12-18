@@ -69,8 +69,10 @@ class StrategyReaderStub(StrategyReader):
 class VersionReaderStub(VersionReader):
     def __init__(self) -> None:
         self.version: str | None = None
+        self.path: str | None = None
 
-    def read_version(self) -> str | None:
+    def read_version(self, version_file: str | None) -> str | None:
+        self.path = version_file
         return self.version
 
     def set_version(self, version: str) -> None:

@@ -108,7 +108,7 @@ class ManifestGenerator:
             sha = self.git_reader.read_most_recent_commit_sha()
             return sha[: tag.size]
         elif isinstance(tag, strategy.VersionTag):
-            version = self.version_reader.read_version()
+            version = self.version_reader.read_version_tag(tag)
             if version is None:
                 raise ValueError("Version not found")
             return version

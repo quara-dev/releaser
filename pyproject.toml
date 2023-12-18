@@ -51,6 +51,15 @@ images = [
 
 [tool.quara.releaser.applications.releaser-docs]
 images = ["quara.azurecr.io/releaser-docs"]
+on_commit_msg = [
+    { match = "*", tags = [
+        { value = "latest" },
+        { type = "version", file = "doc-version.json" },
+        { type = "version", file = "doc-version.json", minor = true },
+        { type = "version", file = "doc-version.json", major = true },
+        { type = "git_commit_sha", size = 7 },
+    ] },
+]
 
 [tool.pyright]
 pythonVersion = "3.10"

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import http
 import json
-import os
 import subprocess
 import sys
 from dataclasses import asdict
@@ -146,27 +145,33 @@ class MagicVersionReader(VersionReader):
     def __init__(self, project_root: Path) -> None:
         self.project_root = project_root
 
-    def read_version(self) -> str | None:
-        if version_file := os.environ.get("VERSION_FILE"):
-            return _JsonFileVersionReader(
-                self.project_root.joinpath(version_file)
-            ).read_version()
+    def read_version(self, version_file: str | None) -> str | None:
+        if version_file:
+            version_path = Path(version_file).expanduser()
+            if version_path.is_file():
+                return self._read_version_file(version_path)
+            return self._read_version_file(self.project_root.joinpath(version_file))
         if self.project_root.joinpath("pyproject.toml").is_file():
-            return _PyprojectVersionReader(
-                self.project_root.joinpath("pyproject.toml")
-            ).read_version()
+            return _PyprojectVersionReader().read_version(
+                self.project_root.joinpath("pyproject.toml").as_posix()
+            )
         if self.project_root.joinpath("package.json").is_file():
-            return _JsonFileVersionReader(
-                self.project_root.joinpath("package.json")
-            ).read_version()
+            return _JsonFileVersionReader().read_version(
+                self.project_root.joinpath("package.json").as_posix()
+            )
+        return None
+
+    def _read_version_file(self, version_file: Path) -> str | None:
+        if version_file.suffix == ".json":
+            return _JsonFileVersionReader().read_version(version_file.as_posix())
+        if version_file.name == "pyproject.toml":
+            return _PyprojectVersionReader().read_version(version_file.as_posix())
+
         return None
 
 
 class _PyprojectReader:
-    def __init__(self, filepath: Path) -> None:
-        self.filepath = filepath
-
-    def load_pyproject(self) -> dict[str, Any]:
+    def load_pyproject(self, filepath: Path) -> dict[str, Any]:
         try:
             import toml  # pyright: ignore[reportMissingModuleSource]
         except ImportError:
@@ -176,14 +181,17 @@ class _PyprojectReader:
             )
             sys.exit(1)
 
-        return toml.loads(self.filepath.read_text())
+        return toml.loads(filepath.read_text())
 
 
 class _PyprojectStrategyReader(StrategyReader, _PyprojectReader):
+    def __init__(self, filepath: Path) -> None:
+        self.filepath = filepath
+
     def detect(self) -> strategy.ReleaseStrategy | None:
         if not self.filepath.exists():
             return None
-        content = self.load_pyproject()
+        content = self.load_pyproject(self.filepath)
         config = content.get("tool", {}).get("quara", {}).get("releaser", None)
         if not config:
             return None
@@ -206,10 +214,13 @@ class _PackageJsonStrategyReader(StrategyReader):
 
 
 class _PyprojectVersionReader(VersionReader, _PyprojectReader):
-    def read_version(self) -> str | None:
-        if not self.filepath.exists():
+    def read_version(self, version_file: str | None) -> str | None:
+        if not version_file:
             return None
-        content = self.load_pyproject()
+        version_filepath = Path(version_file).expanduser()
+        if not version_filepath.exists():
+            return None
+        content = self.load_pyproject(version_filepath)
         # Poetry version
         if "poetry" in content["tool"]:
             return content["tool"]["poetry"]["version"]
@@ -227,11 +238,10 @@ class _PyprojectVersionReader(VersionReader, _PyprojectReader):
 
 
 class _JsonFileVersionReader(VersionReader):
-    def __init__(self, filepath: Path):
-        self.filepath = filepath
-        if not self.filepath.is_file():
-            print(f"Version file not found: {self.filepath}", file=sys.stderr)
-            sys.exit(1)
-
-    def read_version(self) -> str:
-        return json.loads(self.filepath.read_text())["version"]
+    def read_version(self, version_file: str | None) -> str | None:
+        if not version_file:
+            return None
+        version_filepath = Path(version_file).expanduser()
+        if not version_filepath.is_file():
+            return None
+        return json.loads(version_filepath.read_text())["version"]
