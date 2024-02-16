@@ -1,4 +1,5 @@
 """Service used to generate manifest during a release."""
+
 from __future__ import annotations
 
 import re
@@ -79,7 +80,9 @@ class ManifestGenerator:
             if not self.git_reader.current_reference_matches(rule.branch):
                 continue
             for policy in rule.commit_msg:
-                msg = self.git_reader.read_last_commit_message(policy.depth, policy.filter)
+                msg = self.git_reader.read_last_commit_message(
+                    policy.depth, policy.filter
+                )
                 if not msg:
                     continue
                 if self._verify_commit_msg_match_against_policy(msg, policy):

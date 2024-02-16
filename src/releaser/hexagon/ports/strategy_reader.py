@@ -1,4 +1,5 @@
 """This module defines the StrategyReader abstract base class."""
+
 from __future__ import annotations
 
 import abc
