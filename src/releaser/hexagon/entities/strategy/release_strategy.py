@@ -23,13 +23,9 @@ class Application:
     @classmethod
     def parse_dict(cls, data: dict[str, Any]) -> "Application":
         """Parse an application from a dictionary."""
-        policies: list[Any] | dict[str, Any] = data.get("on_commit_msg", [])
-        if isinstance(policies, list):
-            match_policies = [Rule.parse_dict(policy) for policy in policies]
-        else:
-            match_policies = [Rule.parse_dict(policies)]
+        on = [Rule.parse_dict(rule) for rule in data.get("on", {}).values()]
         return cls(
-            on=match_policies,
+            on=on,
             images=[_asimage(image) for image in data.get("images", [])],
         )
 
@@ -69,7 +65,7 @@ class ReleaseStrategy:
                 name: Application.parse_dict(application)
                 for name, application in data.get("applications", {}).items()
             },
-            on=[Rule.parse_dict(rule) for rule in data.get("on", [])],
+            on=[Rule.parse_dict(rule) for rule in data.get("on", {}).values()],
         )
 
     def get_release_strategy_for_application(

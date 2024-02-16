@@ -1,0 +1,34 @@
+{
+  "acquisition": {
+    "images": [
+      {
+        "repository": "quara.azurecr.io/quara-acquisition-app",
+        "image": "quara.azurecr.io/quara-acquisition-app:next",
+        "tag": "next",
+        "platforms": {}
+      },
+      {
+        "repository": "quara.azurecr.io/quara-acquisition-app",
+        "image": "quara.azurecr.io/quara-acquisition-app:shatest",
+        "tag": "shatest",
+        "platforms": {}
+      }
+    ]
+  },
+  "operating-app": {
+    "images": [
+      {
+        "repository": "quara.azurecr.io/quara-operator-app",
+        "image": "quara.azurecr.io/quara-operator-app:next",
+        "tag": "next",
+        "platforms": {}
+      },
+      {
+        "repository": "quara.azurecr.io/quara-operator-app",
+        "image": "quara.azurecr.io/quara-operator-app:shatest",
+        "tag": "shatest",
+        "platforms": {}
+      }
+    ]
+  }
+}

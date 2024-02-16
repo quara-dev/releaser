@@ -1,0 +1,52 @@
+{
+  "quara-all-in-one": {
+    "images": [
+      {
+        "repository": "quara.azurecr.io/quara-all-in-one",
+        "image": "quara.azurecr.io/quara-all-in-one:next",
+        "tag": "next",
+        "platforms": {}
+      },
+      {
+        "repository": "quara.azurecr.io/quara-all-in-one",
+        "image": "quara.azurecr.io/quara-all-in-one:shatest",
+        "tag": "shatest",
+        "platforms": {}
+      }
+    ]
+  },
+  "quara-ble-gateway": {
+    "images": [
+      {
+        "repository": "quara.azurecr.io/quara-ble-gateway",
+        "image": "quara.azurecr.io/quara-ble-gateway:next",
+        "tag": "next",
+        "platforms": {
+          "linux/amd64": {
+            "image": "quara.azurecr.io/quara-ble-gateway:next-amd64",
+            "tag": "next-amd64"
+          },
+          "linux/arm64": {
+            "image": "quara.azurecr.io/quara-ble-gateway:next-arm64",
+            "tag": "next-arm64"
+          }
+        }
+      },
+      {
+        "repository": "quara.azurecr.io/quara-ble-gateway",
+        "image": "quara.azurecr.io/quara-ble-gateway:shatest",
+        "tag": "shatest",
+        "platforms": {
+          "linux/amd64": {
+            "image": "quara.azurecr.io/quara-ble-gateway:shatest-amd64",
+            "tag": "shatest-amd64"
+          },
+          "linux/arm64": {
+            "image": "quara.azurecr.io/quara-ble-gateway:shatest-arm64",
+            "tag": "shatest-arm64"
+          }
+        }
+      }
+    ]
+  }
+}
