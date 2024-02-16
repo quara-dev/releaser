@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal
 
 
@@ -93,15 +93,44 @@ class CommitMsgMatchPolicy:
         return cls(
             match=_aslist(data["match"]),
             tags=[
-                VersionTag.parse_dict(tag)
-                if tag.get("type") == "version"
-                else GitCommitShaTag.parse_dict(tag)
-                if tag.get("type") == "git_commit_sha"
-                else LiteralTag.parse_dict(tag)
+                (
+                    VersionTag.parse_dict(tag)
+                    if tag.get("type") == "version"
+                    else (
+                        GitCommitShaTag.parse_dict(tag)
+                        if tag.get("type") == "git_commit_sha"
+                        else LiteralTag.parse_dict(tag)
+                    )
+                )
                 for tag in data["tags"]
             ],
             filter=data.get("filter"),
             depth=data.get("depth", 20),
+        )
+
+
+@dataclass(frozen=True)
+class Rule:
+    """A rule for a release strategy."""
+
+    branch: list[str] = field(default_factory=list)
+    """The branches to match for the HEAD commit message."""
+
+    commit_msg: list[CommitMsgMatchPolicy] = field(default_factory=list)
+    """The tags to match for the HEAD commit message.
+    These are global policies that apply to all applications.
+    """
+
+    @classmethod
+    def parse_dict(cls, data: dict[str, Any]) -> Rule:
+        """Parse a rule from a dictionary."""
+
+        return cls(
+            branch=_aslist(data.get("branch")),
+            commit_msg=[
+                CommitMsgMatchPolicy.parse_dict(policy)
+                for policy in data.get("commit_msg", [])
+            ],
         )
 
 

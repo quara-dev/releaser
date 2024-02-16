@@ -11,6 +11,9 @@ class GitReaderStub(GitReader):
         self._history: list[str] | None = None
         self._is_dirty: bool | None = None
 
+    def read_current_branch(self) -> str:
+        return "testing"
+
     def is_dirty(self) -> bool:
         if self._is_dirty is None:
             raise RuntimeError("is_dirty not set in stub git reader")

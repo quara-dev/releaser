@@ -12,6 +12,11 @@ class GitReader(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def read_current_branch(self) -> str:
+        """Read the name of the current branch."""
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def read_most_recent_commit_sha(self) -> str:
         """Read the SHA of the latest commit."""
         raise NotImplementedError
@@ -33,3 +38,9 @@ class GitReader(abc.ABC):
                     return commit_msg
             return None
         return history[0]
+
+    def current_reference_matches(self, ref: list[str]) -> bool:
+        """Check if the current reference matches the given ref."""
+        if not ref:
+            return True
+        return self.read_current_branch() in ref

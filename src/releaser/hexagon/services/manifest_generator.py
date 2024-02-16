@@ -75,13 +75,16 @@ class ManifestGenerator:
         self, application: strategy.ApplicationReleaseStrategy
     ) -> Iterator[str]:
         """Generate the list of tags to release for an application."""
-        for policy in application.match_commit_msg:
-            msg = self.git_reader.read_last_commit_message(policy.depth, policy.filter)
-            if not msg:
+        for rule in application.on:
+            if not self.git_reader.current_reference_matches(rule.branch):
                 continue
-            if self._verify_commit_msg_match_against_policy(msg, policy):
-                for tag in policy.tags:
-                    yield self._get_value_for_tag(tag)
+            for policy in rule.commit_msg:
+                msg = self.git_reader.read_last_commit_message(policy.depth, policy.filter)
+                if not msg:
+                    continue
+                if self._verify_commit_msg_match_against_policy(msg, policy):
+                    for tag in policy.tags:
+                        yield self._get_value_for_tag(tag)
 
     def _verify_commit_msg_match_against_policy(
         self, commit_msg: str, policy: CommitMsgMatchPolicy

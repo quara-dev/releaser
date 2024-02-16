@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from .application import Application, ApplicationReleaseStrategy
 from .image import Image
 from .policy import CommitMsgMatchPolicy, GitCommitShaTag, LiteralTag, VersionTag
-from .release_strategy import ReleaseStrategy
+from .release_strategy import (
+    Application,
+    ApplicationReleaseStrategy,
+    ReleaseStrategy,
+    Rule,
+)
 
 __all__ = [
     "Application",
@@ -14,4 +18,5 @@ __all__ = [
     "VersionTag",
     "LiteralTag",
     "Image",
+    "Rule",
 ]

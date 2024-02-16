@@ -77,13 +77,18 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    )
+                                ]
+                            )
                         ],
                     )
-                },
+                }
             )
         )
         # Act
@@ -118,13 +123,19 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.GitCommitShaTag(size=7)]
-                            ),
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    ),
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.GitCommitShaTag(size=7)],
+                                    ),
+                                ]
+                            )
                         ],
                     )
                 },
@@ -164,14 +175,19 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
-                            strategy.CommitMsgMatchPolicy(
-                                match=["this is the latest commit"],
-                                tags=[strategy.GitCommitShaTag(size=7)],
-                            ),
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    ),
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["this is the latest commit"],
+                                        tags=[strategy.GitCommitShaTag(size=7)],
+                                    ),
+                                ]
+                            )
                         ],
                     )
                 },
@@ -211,14 +227,19 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
-                            strategy.CommitMsgMatchPolicy(
-                                match=["the expected pattern"],
-                                tags=[strategy.GitCommitShaTag(size=7)],
-                            ),
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    ),
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["the expected pattern"],
+                                        tags=[strategy.GitCommitShaTag(size=7)],
+                                    ),
+                                ]
+                            )
                         ],
                     )
                 },
@@ -256,14 +277,22 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
-                            strategy.CommitMsgMatchPolicy(
-                                match=["the first pattern", "the second pattern"],
-                                tags=[strategy.GitCommitShaTag(size=7)],
-                            ),
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    ),
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=[
+                                            "the first pattern",
+                                            "the second pattern",
+                                        ],
+                                        tags=[strategy.GitCommitShaTag(size=7)],
+                                    ),
+                                ]
+                            )
                         ],
                     )
                 },
@@ -305,16 +334,21 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"],
-                                tags=[
-                                    strategy.VersionTag(),
-                                    strategy.GitCommitShaTag(size=7),
-                                ],
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    ),
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[
+                                            strategy.VersionTag(),
+                                            strategy.GitCommitShaTag(size=7),
+                                        ],
+                                    ),
+                                ]
                             ),
                         ],
                     )
@@ -362,18 +396,23 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                        on_commit_msg=[
-                            strategy.CommitMsgMatchPolicy(
-                                match=["*"], tags=[strategy.LiteralTag(value="head")]
-                            ),
-                            strategy.CommitMsgMatchPolicy(
-                                match=["chore\\(release\\): bump to version"],
-                                tags=[
-                                    strategy.LiteralTag(value="edge"),
-                                    strategy.VersionTag(),
-                                    strategy.GitCommitShaTag(size=7),
+                        on=[
+                            strategy.Rule(
+                                commit_msg=[
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["*"],
+                                        tags=[strategy.LiteralTag(value="head")],
+                                    ),
+                                    strategy.CommitMsgMatchPolicy(
+                                        match=["chore\\(release\\): bump to version"],
+                                        tags=[
+                                            strategy.LiteralTag(value="edge"),
+                                            strategy.VersionTag(),
+                                            strategy.GitCommitShaTag(size=7),
+                                        ],
+                                    ),
                                 ],
-                            ),
+                            )
                         ],
                     )
                 },
@@ -433,13 +472,17 @@ class TestManifestGeneratorWithSingleApplicationInheritingStrategy(
                         images=[strategy.Image("test-image")],
                     )
                 },
-                on_commit_msg=[
-                    strategy.CommitMsgMatchPolicy(
-                        match=["*"],
-                        tags=[
-                            strategy.LiteralTag(value="next"),
-                            strategy.GitCommitShaTag(size=7),
-                        ],
+                on=[
+                    strategy.Rule(
+                        commit_msg=[
+                            strategy.CommitMsgMatchPolicy(
+                                match=["*"],
+                                tags=[
+                                    strategy.LiteralTag(value="next"),
+                                    strategy.GitCommitShaTag(size=7),
+                                ],
+                            )
+                        ]
                     )
                 ],
             )
@@ -480,14 +523,18 @@ class TestManifestGeneratorWithSingleApplicationInheritingStrategy(
                         images=[strategy.Image("test-image")],
                     )
                 },
-                on_commit_msg=[
-                    strategy.CommitMsgMatchPolicy(
-                        match=["*"], tags=[strategy.LiteralTag(value="next")]
-                    ),
-                    strategy.CommitMsgMatchPolicy(
-                        match=["this is the latest commit"],
-                        tags=[strategy.GitCommitShaTag(size=7)],
-                    ),
+                on=[
+                    strategy.Rule(
+                        commit_msg=[
+                            strategy.CommitMsgMatchPolicy(
+                                match=["*"], tags=[strategy.LiteralTag(value="next")]
+                            ),
+                            strategy.CommitMsgMatchPolicy(
+                                match=["this is the latest commit"],
+                                tags=[strategy.GitCommitShaTag(size=7)],
+                            ),
+                        ],
+                    )
                 ],
             )
         )
@@ -527,14 +574,18 @@ class TestManifestGeneratorWithSingleApplicationInheritingStrategy(
                         images=[strategy.Image("test-image")],
                     )
                 },
-                on_commit_msg=[
-                    strategy.CommitMsgMatchPolicy(
-                        match=["*"], tags=[strategy.LiteralTag(value="next")]
-                    ),
-                    strategy.CommitMsgMatchPolicy(
-                        match=["the expected pattern"],
-                        tags=[strategy.GitCommitShaTag(size=7)],
-                    ),
+                on=[
+                    strategy.Rule(
+                        commit_msg=[
+                            strategy.CommitMsgMatchPolicy(
+                                match=["*"], tags=[strategy.LiteralTag(value="next")]
+                            ),
+                            strategy.CommitMsgMatchPolicy(
+                                match=["the expected pattern"],
+                                tags=[strategy.GitCommitShaTag(size=7)],
+                            ),
+                        ],
+                    )
                 ],
             )
         )
@@ -572,14 +623,18 @@ class TestManifestGeneratorWithSingleApplicationInheritingStrategy(
                         images=[strategy.Image("test-image")],
                     )
                 },
-                on_commit_msg=[
-                    strategy.CommitMsgMatchPolicy(
-                        match=["*"], tags=[strategy.LiteralTag(value="next")]
-                    ),
-                    strategy.CommitMsgMatchPolicy(
-                        match=["the first pattern", "the second pattern"],
-                        tags=[strategy.GitCommitShaTag(size=7)],
-                    ),
+                on=[
+                    strategy.Rule(
+                        commit_msg=[
+                            strategy.CommitMsgMatchPolicy(
+                                match=["*"], tags=[strategy.LiteralTag(value="next")]
+                            ),
+                            strategy.CommitMsgMatchPolicy(
+                                match=["the first pattern", "the second pattern"],
+                                tags=[strategy.GitCommitShaTag(size=7)],
+                            ),
+                        ],
+                    )
                 ],
             )
         )
