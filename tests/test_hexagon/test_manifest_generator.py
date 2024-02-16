@@ -66,12 +66,70 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
         assert manifest is not None
         assert manifest.applications == {}
 
+    @pytest.mark.parametrize(
+        "branches,output",
+        [
+            (
+                [],
+                artefact.Manifest(
+                    applications={
+                        "test-app": artefact.Application(
+                            images=[
+                                artefact.Image(
+                                    repository="test-image",
+                                    image="test-image:head",
+                                    tag="head",
+                                    platforms={},
+                                )
+                            ]
+                        )
+                    }
+                ),
+            ),
+            (["something_else"], artefact.Manifest(applications={})),
+            (
+                ["next"],
+                artefact.Manifest(
+                    applications={
+                        "test-app": artefact.Application(
+                            images=[
+                                artefact.Image(
+                                    repository="test-image",
+                                    image="test-image:head",
+                                    tag="head",
+                                    platforms={},
+                                )
+                            ]
+                        )
+                    }
+                ),
+            ),
+            (
+                ["something_else", "next"],
+                artefact.Manifest(
+                    applications={
+                        "test-app": artefact.Application(
+                            images=[
+                                artefact.Image(
+                                    repository="test-image",
+                                    image="test-image:head",
+                                    tag="head",
+                                    platforms={},
+                                )
+                            ]
+                        )
+                    }
+                ),
+            ),
+        ],
+    )
     def test_with_single_image_and_literal_commit_msg_matcher(
-        self,
+        self, branches: list[str], output: artefact.Manifest
     ):
         # Arrange
         self.git_reader.set_is_dirty(False)
         self.git_reader.set_history(["this is the latest commit message"])
+        self.git_reader.set_branch("next")
         self.strategy_reader.set_strategy(
             strategy.ReleaseStrategy(
                 applications={
@@ -79,12 +137,13 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
                         images=[strategy.Image("test-image")],
                         on=[
                             strategy.Rule(
+                                branches=branches,
                                 commit_msg=[
                                     strategy.CommitMsgMatchPolicy(
                                         match=["*"],
                                         tags=[strategy.LiteralTag(value="head")],
                                     )
-                                ]
+                                ],
                             )
                         ],
                     )
@@ -96,17 +155,7 @@ class TestManifestGeneratorWithSingleApplication(ManifestGeneratorSetup):
         # Assert
         manifest = self.json_writer.read_manifest()
         assert manifest is not None
-        assert manifest.applications == {
-            "test-app": artefact.Application(
-                images=[
-                    artefact.Image(
-                        repository="test-image",
-                        tag="head",
-                        image="test-image:head",
-                    )
-                ]
-            )
-        }
+        assert manifest == output
 
     @pytest.mark.parametrize(
         "last_commit", ["the first pattern is ...", "the second pattern is ..."]
@@ -470,7 +519,7 @@ class TestManifestGeneratorWithSingleApplicationInheritingStrategy(
                 applications={
                     "test-app": strategy.Application(
                         images=[strategy.Image("test-image")],
-                    )
+                    ),
                 },
                 on=[
                     strategy.Rule(

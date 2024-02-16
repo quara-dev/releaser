@@ -77,7 +77,7 @@ class ManifestGenerator:
     ) -> Iterator[str]:
         """Generate the list of tags to release for an application."""
         for rule in application.on:
-            if not self.git_reader.current_reference_matches(rule.branch):
+            if not self.git_reader.current_reference_matches(rule.branches):
                 continue
             for policy in rule.commit_msg:
                 msg = self.git_reader.read_last_commit_message(

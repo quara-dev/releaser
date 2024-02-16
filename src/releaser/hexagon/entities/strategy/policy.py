@@ -113,7 +113,7 @@ class CommitMsgMatchPolicy:
 class Rule:
     """A rule for a release strategy."""
 
-    branch: list[str] = field(default_factory=list)
+    branches: list[str] = field(default_factory=list)
     """The branches to match for the HEAD commit message."""
 
     commit_msg: list[CommitMsgMatchPolicy] = field(default_factory=list)
@@ -126,7 +126,7 @@ class Rule:
         """Parse a rule from a dictionary."""
 
         return cls(
-            branch=_aslist(data.get("branch")),
+            branches=_aslist(data.get("branch")),
             commit_msg=[
                 CommitMsgMatchPolicy.parse_dict(policy)
                 for policy in data.get("commit_msg", [])
