@@ -1,0 +1,90 @@
+{
+  "quara": {
+    "schemas": {
+      "namespace": "quara",
+      "reference": "next",
+      "storageAccount": "devquacomapijqtcetlst0"
+    },
+    "releaser": {
+      "on": {
+        "all": {
+          "commit_msg": [
+            {
+              "match": "*",
+              "tags": [
+                {
+                  "type": "git_commit_sha",
+                  "size": 7
+                }
+              ]
+            }
+          ]
+        },
+        "continuous-delivery": {
+          "branches": [
+            "next"
+          ],
+          "commit_msg": [
+            {
+              "match": "*",
+              "tags": [
+                {
+                  "value": "next"
+                }
+              ]
+            },
+            {
+              "match": [
+                "chore\\(release\\): bumped to version [0-9]*.[0-9]*.[0-9]*\\-rc\\.[0-9]*\\s"
+              ],
+              "tags": [
+                {
+                  "value": "edge"
+                }
+              ]
+            },
+            {
+              "match": [
+                "chore\\(release\\): bumped to version [0-9]*.[0-9]*.[0-9]*",
+                "chore: merge from stable branch"
+              ],
+              "tags": [
+                {
+                  "type": "version"
+                }
+              ]
+            },
+            {
+              "match": [
+                "chore\\(release\\): bumped to version [0-9]*.[0-9]*.[0-9]*\\s"
+              ],
+              "tags": [
+                {
+                  "value": "latest"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "applications": {
+        "quara-frontend": {
+          "images": [
+            {
+              "repository": "quara.azurecr.io/quara-frontend",
+              "dockerfile": "docker/Dockerfile"
+            }
+          ]
+        },
+        "quara-frontend-storybook": {
+          "images": [
+            {
+              "repository": "quara.azurecr.io/quara-storybook",
+              "dockerfile": "docker/storybook/Dockerfile"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -8,7 +8,6 @@ from releaser.hexagon.ports import JsonWriter
 
 
 class JsonStdoutWriter(JsonWriter):
-
     """A JSON writer that writes to the standard output."""
 
     def write_manifest(self, manifest: artefact.Manifest) -> None:

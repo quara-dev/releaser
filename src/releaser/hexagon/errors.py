@@ -1,4 +1,5 @@
 """Custom errors for releaser hexagon."""
+
 from __future__ import annotations
 
 

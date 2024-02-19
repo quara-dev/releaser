@@ -1,6 +1,5 @@
 """Service used to build manfest artefacts."""
 
-
 from dataclasses import dataclass
 
 from ..entities import bakery, strategy

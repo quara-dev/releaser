@@ -1,0 +1,105 @@
+{
+  "quara": {
+    "schemas": {
+      "namespace": "quara",
+      "reference": "next",
+      "storageAccount": "devquacomapijqtcetlst0"
+    },
+    "releaser": {
+      "on": {
+        "all": {
+          "commit_msg": [
+            {
+              "match": "*",
+              "tags": [
+                {
+                  "type": "git_commit_sha",
+                  "size": 7
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "applications": {
+        "operating-app": {
+          "images": [
+            "quara.azurecr.io/quara-operator-app"
+          ],
+          "on": {
+            "continuous-delivery": {
+              "branches": [
+                "next"
+              ],
+              "commit_msg": [
+                {
+                  "match": "chore\\(release\\): [a-z-A-Z]* [0-9].[0-9]*.[0-9]",
+                  "tags": [
+                    {
+                      "value": "latest"
+                    },
+                    {
+                      "type": "version",
+                      "file": "apps/operating-app/version.json"
+                    }
+                  ]
+                },
+                {
+                  "match": "*",
+                  "tags": [
+                    {
+                      "value": "next"
+                    },
+                    {
+                      "type": "git_commit_sha",
+                      "size": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "acquisition": {
+          "images": [
+            "quara.azurecr.io/quara-acquisition-app"
+          ],
+          "on": {
+            "all": {},
+            "continuous-delivery": {
+              "branches": [
+                "next"
+              ],
+              "commit_msg": [
+                {
+                  "match": "chore\\(release\\): [a-z-A-Z]* [0-9].[0-9]*.[0-9]",
+                  "tags": [
+                    {
+                      "value": "latest"
+                    },
+                    {
+                      "type": "version",
+                      "file": "apps/acquisition/version.json"
+                    }
+                  ]
+                },
+                {
+                  "match": "*",
+                  "tags": [
+                    {
+                      "value": "next"
+                    },
+                    {
+                      "type": "git_commit_sha",
+                      "size": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

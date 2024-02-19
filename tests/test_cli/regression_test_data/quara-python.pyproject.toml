@@ -1,0 +1,42 @@
+
+[tool.quara.releaser.on.continuous-delivery]
+branch = ["next"]
+commit_msg = [
+    { match = "*", tags = [
+        { value = "next" }
+    ] },
+    { match = [
+        "chore\\(release\\): bump to version [0-9]*.[0-9]*.[0-9]*\\-rc\\.[0-9]*\\s",
+    ], tags = [
+        { value = "edge" }
+    ] },
+    { match = [
+        "chore\\(release\\): bump to version [0-9]*.[0-9]*.[0-9]*",
+        "chore\\(release\\): merge from stable branch",
+    ], tags = [
+        { type = "version" }
+    ] },
+    { match = [
+        "chore\\(release\\): bump to version [0-9]*.[0-9]*.[0-9]*\\s",
+    ], tags = [
+        { value = "latest" }
+    ] },
+]
+
+[tool.quara.releaser.on.all]
+commit_msg = [
+    { match = "*", tags = [
+        { type = "git_commit_sha", size = 7 }
+    ] }
+]
+
+[tool.quara.releaser.applications.quara-all-in-one]
+images = [{ repository = "quara.azurecr.io/quara-all-in-one" }]
+
+[tool.quara.releaser.applications.quara-ble-gateway]
+images = [
+    { repository = "quara.azurecr.io/quara-ble-gateway", platforms = [
+        "linux/amd64",
+        "linux/arm64",
+    ] },
+]

@@ -1,4 +1,5 @@
 """This module defines the HttpClient abstract base class."""
+
 from __future__ import annotations
 
 import abc

@@ -18,6 +18,10 @@ class GitSubprocessReader(GitReader):
         process = subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"])
         return process.returncode != 0
 
+    def read_current_branch(self) -> str:
+        branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+        return branch.decode().strip()
+
     def read_most_recent_commit_sha(self) -> str:
         long_sha = (
             subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip()
