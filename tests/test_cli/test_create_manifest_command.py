@@ -3,8 +3,9 @@ from __future__ import annotations
 import json
 import shlex
 from pathlib import Path
-import toml
+
 import pytest
+import toml
 
 from releaser.cli.app import Application
 from releaser.hexagon.entities import artefact, strategy
@@ -23,12 +24,17 @@ class CreateManifestCommandSetup:
             testing_dependencies=self.deps,
         )
 
+    def read_manifest(self) -> artefact.Manifest:
+        """Get the generated manifest."""
+        generated = self.deps.manifest_writer.read_manifest()
+        if generated is None:
+            raise ValueError("Manifest is not generated")
+        return generated
+
     def assert_manifest(self, expected: dict[str, object]) -> None:
-        """An assertion helper to check the manifest contents."""
-        assert (
-            self.deps.manifest_writer.read_manifest()
-            == artefact.Manifest.parse_dict(expected)
-        )
+        """Assert the generated manifest."""
+        generated = self.read_manifest()
+        assert generated == generated.parse_dict(expected)
 
     def set_strategy(self, values: dict[str, object]) -> None:
         """A helper to set the release strategy during test."""
@@ -44,7 +50,8 @@ class CreateManifestCommandSetup:
     ):
         """a helper to set git state"""
         self.deps.git_reader.set_history(history)
-        self.deps.git_reader.set_sha(sha)
+        if sha is not None:
+            self.deps.git_reader.set_sha(sha)
         self.deps.git_reader.set_branch(branch)
         self.deps.git_reader.set_is_dirty(dirty)
 
@@ -52,29 +59,32 @@ class CreateManifestCommandSetup:
         """A helper to run a command during test."""
         self.app.execute(shlex.split(command))
 
-    def read_pyproject_toml(self, file_name: str) -> dict[str, object]:
-        """a helper that  read and return a toml object from  file"""
-        return toml.loads(self.read_file("regression_test_data", file_name))["tool"][
-            "quara"
-        ]["releaser"]
+    @staticmethod
+    def read_test_file(*path: str) -> str:
+        """read file regarding path"""
+        absolute_path = Path(__file__).parent.joinpath(*path)
+        return absolute_path.read_text()
 
     @classmethod
-    def read_file(cls, *path: str) -> str:
-        """read file regarding path"""
-        path = Path(__file__).parent.joinpath(*path)
-        return path.read_text()
-
-    def read_releaser_config(self, file_name: str, type: str) -> dict[str, object]:
-        if type == "toml":
-            return self.read_pyproject_toml(f"{file_name}.{type}")
-        elif type == "json":
-            return self.read_package_json(f"{file_name}.{type}")
-
-    def read_package_json(self, file_name: str) -> dict[str, object]:
+    def read_package_json(cls, file_name: str) -> dict[str, object]:
         """read packages json for regression test"""
-        return json.loads(self.read_file("regression_test_data", file_name))["quara"][
-            "releaser"
-        ]
+        content = json.loads(cls.read_test_file("regression_test_data", file_name))
+        return content["quara"]["releaser"]
+
+    @classmethod
+    def read_pyproject_toml(cls, file_name: str) -> dict[str, object]:
+        """a helper that  read and return a toml object from  file"""
+        content = toml.loads(cls.read_test_file("regression_test_data", file_name))
+        return content["tool"]["quara"]["releaser"]
+
+    @classmethod
+    def read_releaser_config(cls, file_name: str) -> dict[str, object]:
+        extension = file_name.split(".")[-1]
+        if extension == "toml":
+            return cls.read_pyproject_toml(file_name)
+        elif extension == "json":
+            return cls.read_package_json(file_name)
+        raise TypeError(f"Unknown file extension: {extension}")
 
 
 class TestCreateManifestCommand(CreateManifestCommandSetup):
@@ -93,24 +103,21 @@ class TestCreateManifestCommand(CreateManifestCommandSetup):
         )
 
     @pytest.mark.parametrize(
-        "strategy_file_name, strategy_file_extension,  branches, output_file_name",
+        "strategy_file_name, branch, output_file_name",
         [
             (
-                "quara-frontend.package",
-                "json",
-                ["next"],
+                "quara-frontend.package.json",
+                "next",
                 "manifest_quara-frontend-branch_next.json",
             ),
             (
-                "quara-app.package",
-                "json",
-                ["next"],
+                "quara-app.package.json",
+                "next",
                 "manifest_quara-app-branch_next.json",
             ),
             (
-                "quara-python.pyproject",
-                "toml",
-                ["next"],
+                "quara-python.pyproject.toml",
+                "next",
                 "manifest_quara-python-branch_next.json",
             ),
         ],
@@ -118,20 +125,22 @@ class TestCreateManifestCommand(CreateManifestCommandSetup):
     def test_json_manifest(
         self,
         strategy_file_name: str,
-        strategy_file_extension: str,
-        branches: list[str],
+        branch: str,
         output_file_name: str,
     ):
-        self.set_strategy(
-            self.read_releaser_config(strategy_file_name, strategy_file_extension)
+        expected_output = self.read_test_file(
+            "regression_test_data", "output", output_file_name
         )
+        # Arrange
+        self.set_strategy(self.read_releaser_config(strategy_file_name))
         self.set_git_state(
-            branch="next", history=["this is the latest commit message"], sha="shatest"
+            branch=branch,
+            history=["this is the latest commit message"],
+            sha="shatest",
         )
+        # Act
         self.run_command(
             "create-manifest",
         )
-        manifest = json.loads(
-            self.read_file("regression_test_data", "output", output_file_name)
-        )
-        self.assert_manifest({"applications": manifest})
+        # Assert
+        self.assert_manifest(json.loads(expected_output))

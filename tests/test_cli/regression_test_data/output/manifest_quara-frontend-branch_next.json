@@ -1,34 +1,36 @@
 {
-  "quara-frontend": {
-    "images": [
-      {
-        "repository": "quara.azurecr.io/quara-frontend",
-        "image": "quara.azurecr.io/quara-frontend:shatest",
-        "tag": "shatest",
-        "platforms": {}
-      },
-      {
-        "repository": "quara.azurecr.io/quara-frontend",
-        "image": "quara.azurecr.io/quara-frontend:next",
-        "tag": "next",
-        "platforms": {}
-      }
-    ]
-  },
-  "quara-frontend-storybook": {
-    "images": [
-      {
-        "repository": "quara.azurecr.io/quara-storybook",
-        "image": "quara.azurecr.io/quara-storybook:shatest",
-        "tag": "shatest",
-        "platforms": {}
-      },
-      {
-        "repository": "quara.azurecr.io/quara-storybook",
-        "image": "quara.azurecr.io/quara-storybook:next",
-        "tag": "next",
-        "platforms": {}
-      }
-    ]
+  "applications": {
+    "quara-frontend": {
+      "images": [
+        {
+          "repository": "quara.azurecr.io/quara-frontend",
+          "image": "quara.azurecr.io/quara-frontend:shatest",
+          "tag": "shatest",
+          "platforms": {}
+        },
+        {
+          "repository": "quara.azurecr.io/quara-frontend",
+          "image": "quara.azurecr.io/quara-frontend:next",
+          "tag": "next",
+          "platforms": {}
+        }
+      ]
+    },
+    "quara-frontend-storybook": {
+      "images": [
+        {
+          "repository": "quara.azurecr.io/quara-storybook",
+          "image": "quara.azurecr.io/quara-storybook:shatest",
+          "tag": "shatest",
+          "platforms": {}
+        },
+        {
+          "repository": "quara.azurecr.io/quara-storybook",
+          "image": "quara.azurecr.io/quara-storybook:next",
+          "tag": "next",
+          "platforms": {}
+        }
+      ]
+    }
   }
 }
