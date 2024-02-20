@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import os
 import subprocess
 
 from releaser.hexagon.ports import GitReader
+
+GIT_BRANCH_NAME_ENV_VAR = "BUILD_BRANCH_NAME"
 
 
 class GitSubprocessReader(GitReader):
@@ -19,6 +22,8 @@ class GitSubprocessReader(GitReader):
         return process.returncode != 0
 
     def read_current_branch(self) -> str:
+        if branch := os.environ.get(GIT_BRANCH_NAME_ENV_VAR):
+            return branch
         branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
         return branch.decode().strip()
 
