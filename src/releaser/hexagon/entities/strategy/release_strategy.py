@@ -60,13 +60,17 @@ class ReleaseStrategy:
     @classmethod
     def parse_dict(cls, data: dict[str, Any]) -> "ReleaseStrategy":
         """Parse a release strategy from a dictionary."""
-        return cls(
+        strategy = cls(
             applications={
                 name: Application.parse_dict(application)
                 for name, application in data.get("applications", {}).items()
             },
             on=[Rule.parse_dict(rule) for rule in data.get("on", {}).values()],
         )
+        for app in strategy.applications.values():
+            if not app.on:
+                app.on = strategy.on
+        return strategy
 
     def get_release_strategy_for_application(
         self, name: str
