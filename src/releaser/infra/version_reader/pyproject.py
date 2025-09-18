@@ -17,6 +17,8 @@ class PyprojectVersionReader(VersionReader, PyprojectLoader):
             return None
         content = self.load_pyproject(version_filepath)
         # Poetry version
+        if  "version" in content.get("project", {}):
+            return content["project"]["version"]
         if "poetry" in content["tool"]:
             return content["tool"]["poetry"]["version"]
         # Setuptools dynamic version
